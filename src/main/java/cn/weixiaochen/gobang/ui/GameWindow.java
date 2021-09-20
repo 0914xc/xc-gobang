@@ -1,7 +1,6 @@
 package cn.weixiaochen.gobang.ui;
 
-import cn.weixiaochen.gobang.chess.CheckerBoard;
-import cn.weixiaochen.gobang.listener.CheckerBoardMouseListener;
+import cn.weixiaochen.gobang.listener.ChessBoardMouseListener;
 import cn.weixiaochen.gobang.listener.StartActionListener;
 import cn.weixiaochen.gobang.listener.WithdrawActionListener;
 import cn.weixiaochen.gobang.ui.component.CheckerBoardPanel;
@@ -15,26 +14,19 @@ import java.awt.*;
  */
 public class GameWindow extends JFrame {
 
-    /* 棋盘数据 */
-    CheckerBoard checkerBoard;
-
     /* 棋盘界面 */
-    CheckerBoardPanel checkerBoardPanel;
+    private CheckerBoardPanel checkerBoardPanel;
 
     /* 开始按钮 */
-    JButton startBtn;
+    private JButton startBtn;
 
     /* 悔棋按钮 */
-    JButton withdrawBtn;
+    private JButton withdrawBtn;
+
+    /* 游戏进行中标志 */
+    private boolean isRunning;
 
     public GameWindow() throws HeadlessException {
-        init();
-    }
-
-    /**
-     * 初始化游戏窗口基本属性
-     */
-    protected void init() {
         setTitle("五子棋");
         setLayout(new BorderLayout());
         // 添加组件
@@ -55,20 +47,19 @@ public class GameWindow extends JFrame {
 
     protected void addComponents() {
         /* 添加棋盘 */
-        checkerBoard = new CheckerBoard();
-        checkerBoardPanel = new CheckerBoardPanel(checkerBoard);
+        checkerBoardPanel = new CheckerBoardPanel();
         add(checkerBoardPanel, BorderLayout.CENTER);
 
         /* 添加开始、悔棋按钮 */
         JPanel south = new JPanel();
-
         startBtn = new JButton("开始");
         south.add(startBtn);
-
         withdrawBtn = new JButton("悔棋");
         south.add(withdrawBtn);
-
         add(south, BorderLayout.SOUTH);
+
+        /* 初始设置悔棋按钮不可用 */
+        this.withdrawBtn.setEnabled(false);
     }
 
     /**
@@ -88,13 +79,9 @@ public class GameWindow extends JFrame {
      * 设置监听事件
      */
     protected void addListeners() {
-        this.checkerBoardPanel.addMouseListener(new CheckerBoardMouseListener(this));
+        this.checkerBoardPanel.addMouseListener(new ChessBoardMouseListener(this));
         this.startBtn.addActionListener(new StartActionListener(this));
         this.withdrawBtn.addActionListener(new WithdrawActionListener(this));
-    }
-
-    public CheckerBoard getCheckerBoard() {
-        return this.checkerBoard;
     }
 
     public CheckerBoardPanel getCheckerBoardPanel() {
@@ -107,5 +94,13 @@ public class GameWindow extends JFrame {
 
     public JButton getWithdrawBtn() {
         return this.withdrawBtn;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public void setRunning(boolean running) {
+        isRunning = running;
     }
 }

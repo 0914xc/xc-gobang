@@ -1,11 +1,17 @@
 package cn.weixiaochen.gobang.Rule;
 
-import cn.weixiaochen.gobang.chess.CheckerBoard;
+import cn.weixiaochen.gobang.chess.ChessBoard;
 import cn.weixiaochen.gobang.chess.ChessMan;
+import cn.weixiaochen.gobang.player.HumanPlayer;
+import cn.weixiaochen.gobang.ui.GameWindow;
 
+import javax.swing.*;
 import java.util.List;
 
 /**
+ * 1. 胜负判断：黑棋先手，白棋无禁手，先五为胜
+ * 2. 禁手判断：长连、双四、双活三
+ *
  * @author 魏小宸 2021/9/19
  */
 public class Rule {
@@ -13,17 +19,17 @@ public class Rule {
     // 定义黑棋先手
     public static final int FIRST = ChessMan.BLACK;
 
-    public static boolean checkWin(CheckerBoard checkerBoard) {
+    public static boolean checkWin() {
         // 棋盘上棋子总数大于6颗，才有机会判输赢
-        if (checkerBoard.getChessManNum() < 6) {
+        if (ChessBoard.get().getChessManNum() < 6) {
             return false;
         }
-        ChessMan lastChessMan = checkerBoard.getLastChessMan();
+        ChessMan lastChessMan = ChessBoard.get().getLastChessMan();
         List<ChessMan> allChessMan;
         if (lastChessMan.getColor() == ChessMan.WHITE) {
-            allChessMan = checkerBoard.getWhiteChess();
+            allChessMan = ChessBoard.get().getWhiteChess();
         } else {
-            allChessMan = checkerBoard.getBlackChess();
+            allChessMan = ChessBoard.get().getBlackChess();
         }
 
         // 横

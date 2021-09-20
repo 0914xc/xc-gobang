@@ -5,10 +5,12 @@ import java.util.List;
 
 /**
  * 棋盘
- *
  * @author 魏小宸 2021/9/12
  */
-public class CheckerBoard {
+public class ChessBoard {
+
+    /* 单例模式 */
+    private static ChessBoard chessBoard;
 
     /* 国际通用五子棋棋盘规格 */
     public static final int SIZE = 15;
@@ -21,7 +23,15 @@ public class CheckerBoard {
 
     private ChessMan lastChessMan;
 
-    public CheckerBoard() {
+    public static ChessBoard get() {
+        if (chessBoard == null) {
+            chessBoard = new ChessBoard();
+        }
+        return chessBoard;
+    }
+
+
+    private ChessBoard() {
         whiteChess = new LinkedList<>();
         blackChess = new LinkedList<>();
     }
@@ -79,5 +89,11 @@ public class CheckerBoard {
 
     public int getChessManNum() {
         return this.whiteChess.size() + this.blackChess.size();
+    }
+
+    public void clearChessBoard() {
+        this.whiteChess.clear();
+        this.blackChess.clear();
+        this.lastChessMan = null;
     }
 }
