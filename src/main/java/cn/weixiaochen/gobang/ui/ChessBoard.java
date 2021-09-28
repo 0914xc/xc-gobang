@@ -1,7 +1,7 @@
-package cn.weixiaochen.gobang.ui.component;
+package cn.weixiaochen.gobang.ui;
 
-import cn.weixiaochen.gobang.chess.ChessBoard;
-import cn.weixiaochen.gobang.chess.ChessMan;
+import cn.weixiaochen.gobang.chess.Board;
+import cn.weixiaochen.gobang.chess.Piece;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +11,7 @@ import java.awt.*;
  *
  * @author 魏小宸 2021/9/19
  */
-public class CheckerBoardPanel extends JPanel {
+public class ChessBoard extends JPanel {
 
     /* 格子尺寸 */
     public static final int GRID_SIZE = 35;
@@ -23,13 +23,13 @@ public class CheckerBoardPanel extends JPanel {
     public static final int PADDING = 20;
 
     /* 棋盘大小 */
-    public static final int CHECKER_BOARD_SIZE = (ChessBoard.SIZE - 1) * GRID_SIZE;
+    public static final int BOARD_SIZE = (Board.SIZE - 1) * GRID_SIZE;
 
     /* 天元和四星的大小 */
     public static final int START_SIZE = 6;
 
     /* 棋子大小 */
-    public static final int CHESSMAN_SIZE = 20;
+    public static final int PIECE_SIZE = 20;
 
     /* 网格线左上角顶点x坐标 */
     int x1;
@@ -43,34 +43,31 @@ public class CheckerBoardPanel extends JPanel {
     /* 网格线左上角顶点y坐标 */
     int y2;
 
-    public CheckerBoardPanel() {
+    public ChessBoard() {
         this.x1 = MARGIN + PADDING;
         this.y1 = this.x1;
-        this.x2 = this.y1 + CHECKER_BOARD_SIZE;
+        this.x2 = this.y1 + BOARD_SIZE;
         this.y2 = this.x2;
     }
 
     @Override
     public void paint(Graphics g) {
-        // 得到一只画笔
+        // 得到一支画笔
         Graphics2D pen = (Graphics2D) g;
 
         fillChessBoardBackground(pen);
         paintGridLine(pen);
         paintStars(pen);
-        paintChessMan(pen);
-        specialMarkLastChessMan(pen);
+        paintPieces(pen);
+        specialMarkLastPiece(pen);
     }
 
     /**
      * 填充棋盘背景
      */
     protected void fillChessBoardBackground(Graphics2D pen) {
-        pen.setColor(Color.getHSBColor(29, 32, 81));
-        pen.fill3DRect(MARGIN, MARGIN,
-                CHECKER_BOARD_SIZE + (PADDING * 2),
-                CHECKER_BOARD_SIZE + (PADDING * 2),
-                true);
+        pen.setColor(new Color(255, 207, 152));
+        pen.fill3DRect(MARGIN, MARGIN, BOARD_SIZE + (PADDING * 2), BOARD_SIZE + (PADDING * 2), true);
     }
 
     /**
@@ -79,11 +76,11 @@ public class CheckerBoardPanel extends JPanel {
     protected void paintGridLine(Graphics2D pen) {
         pen.setColor(Color.GRAY);
         // 画横线：x坐标不变
-        for (int i = 1; i <= ChessBoard.SIZE; i++) {
+        for (int i = 1; i <= Board.SIZE; i++) {
             pen.drawLine(this.x1, GRID_SIZE * i, this.x2, GRID_SIZE * i);
         }
         // 画竖线：y坐标不变
-        for (int i = 1; i <= ChessBoard.SIZE; i++) {
+        for (int i = 1; i <= Board.SIZE; i++) {
             pen.drawLine(GRID_SIZE * i, this.y1, GRID_SIZE * i, this.y2);
         }
     }
@@ -108,49 +105,49 @@ public class CheckerBoardPanel extends JPanel {
     /**
      * 画棋子
      */
-    protected void paintChessMan(Graphics2D pen) {
+    synchronized protected void paintPieces(Graphics2D pen) {
         pen.setColor(Color.WHITE);
-        for (ChessMan chessMan : ChessBoard.get().getWhiteChess()) {
-            pen.fillOval(x1 + (chessMan.getX() * GRID_SIZE) - CHESSMAN_SIZE / 2,
-                    y1 + (chessMan.getY() * GRID_SIZE) - CHESSMAN_SIZE / 2,
-                    CHESSMAN_SIZE, CHESSMAN_SIZE);
+        for (Piece piece : Board.get().getWhitePieces()) {
+            pen.fillOval(x1 + (piece.getX() * GRID_SIZE) - PIECE_SIZE / 2,
+                    y1 + (piece.getY() * GRID_SIZE) - PIECE_SIZE / 2,
+                    PIECE_SIZE, PIECE_SIZE);
         }
         pen.setColor(Color.BLACK);
-        for (ChessMan chessMan : ChessBoard.get().getBlackChess()) {
-            pen.fillOval(x1 + (chessMan.getX() * GRID_SIZE) - CHESSMAN_SIZE / 2,
-                    y1 + (chessMan.getY() * GRID_SIZE) - CHESSMAN_SIZE / 2,
-                    CHESSMAN_SIZE, CHESSMAN_SIZE);
+        for (Piece piece : Board.get().getBlackPieces()) {
+            pen.fillOval(x1 + (piece.getX() * GRID_SIZE) - PIECE_SIZE / 2,
+                    y1 + (piece.getY() * GRID_SIZE) - PIECE_SIZE / 2,
+                    PIECE_SIZE, PIECE_SIZE);
         }
     }
 
     /**
      * 特殊标记最后一手棋子(空心十字)
      */
-    protected void specialMarkLastChessMan(Graphics2D pen) {
+    protected void specialMarkLastPiece(Graphics2D pen) {
 
         // 没有棋子
-        if (ChessBoard.get().isEmpty()) {
+        if (Board.get().isEmpty()) {
             return;
         }
 
-        ChessMan chessMan = ChessBoard.get().getLastChessMan();
+        Piece piece = Board.get().getLastPiece();
 
-        if (chessMan.getColor() == ChessMan.BLACK) {
+        if (Piece.Color.BLACK == piece.getColor()) {
             pen.setColor(Color.WHITE);
-        } else if (chessMan.getColor() == ChessMan.WHITE) {
+        } else {
             pen.setColor(Color.BLACK);
         }
 
-        pen.drawLine(x1 + GRID_SIZE * chessMan.getX() - CHESSMAN_SIZE / 4, y1 + GRID_SIZE * chessMan.getY(),
-                x1 + GRID_SIZE * chessMan.getX() + CHESSMAN_SIZE / 4, y1 + GRID_SIZE * chessMan.getY());
-        pen.drawLine(x1 + (GRID_SIZE * chessMan.getX()), y1 + GRID_SIZE * chessMan.getY() - CHESSMAN_SIZE / 4,
-                x1 + GRID_SIZE * chessMan.getX(), y1 + GRID_SIZE * chessMan.getY() + CHESSMAN_SIZE / 4);
+        pen.drawLine(x1 + GRID_SIZE * piece.getX() - PIECE_SIZE / 4, y1 + GRID_SIZE * piece.getY(),
+                x1 + GRID_SIZE * piece.getX() + PIECE_SIZE / 4, y1 + GRID_SIZE * piece.getY());
+        pen.drawLine(x1 + (GRID_SIZE * piece.getX()), y1 + GRID_SIZE * piece.getY() - PIECE_SIZE / 4,
+                x1 + GRID_SIZE * piece.getX(), y1 + GRID_SIZE * piece.getY() + PIECE_SIZE / 4);
 
-        if (chessMan.getColor() == ChessMan.BLACK) {
+        if (piece.getColor() == Piece.Color.BLACK) {
             pen.setColor(Color.BLACK);
-        } else if (chessMan.getColor() == ChessMan.WHITE) {
+        } else {
             pen.setColor(Color.WHITE);
         }
-        pen.fillOval(x1 + GRID_SIZE * chessMan.getX() - 2, y1 + GRID_SIZE * chessMan.getY() - 2, 4, 4);
+        pen.fillOval(x1 + GRID_SIZE * piece.getX() - 2, y1 + GRID_SIZE * piece.getY() - 2, 4, 4);
     }
 }

@@ -1,9 +1,7 @@
 package cn.weixiaochen.gobang.ui;
 
-import cn.weixiaochen.gobang.listener.ChessBoardMouseListener;
-import cn.weixiaochen.gobang.listener.StartActionListener;
-import cn.weixiaochen.gobang.listener.WithdrawActionListener;
-import cn.weixiaochen.gobang.ui.component.CheckerBoardPanel;
+import cn.weixiaochen.gobang.listener.BoardListener;
+import cn.weixiaochen.gobang.listener.ButtonListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,13 +13,13 @@ import java.awt.*;
 public class GameWindow extends JFrame {
 
     /* 棋盘界面 */
-    private CheckerBoardPanel checkerBoardPanel;
+    private final ChessBoard chessBoard = new ChessBoard();
 
     /* 开始按钮 */
-    private JButton startBtn;
+    private final JButton startBtn = new JButton("开始");
 
     /* 悔棋按钮 */
-    private JButton withdrawBtn;
+    private final JButton cancelBtn = new JButton("悔棋");
 
     /* 游戏进行中标志 */
     private boolean isRunning;
@@ -47,19 +45,16 @@ public class GameWindow extends JFrame {
 
     protected void addComponents() {
         /* 添加棋盘 */
-        checkerBoardPanel = new CheckerBoardPanel();
-        add(checkerBoardPanel, BorderLayout.CENTER);
+        add(chessBoard, BorderLayout.CENTER);
 
         /* 添加开始、悔棋按钮 */
         JPanel south = new JPanel();
-        startBtn = new JButton("开始");
         south.add(startBtn);
-        withdrawBtn = new JButton("悔棋");
-        south.add(withdrawBtn);
+        south.add(cancelBtn);
         add(south, BorderLayout.SOUTH);
 
         /* 初始设置悔棋按钮不可用 */
-        this.withdrawBtn.setEnabled(false);
+        this.cancelBtn.setEnabled(false);
     }
 
     /**
@@ -67,9 +62,7 @@ public class GameWindow extends JFrame {
      */
     protected void setWindowSize() {
         // 根据棋盘大小计算出游戏窗口大小
-        int width = CheckerBoardPanel.CHECKER_BOARD_SIZE
-                + (CheckerBoardPanel.MARGIN * 2)
-                + (CheckerBoardPanel.PADDING * 2);
+        int width = ChessBoard.BOARD_SIZE + (ChessBoard.MARGIN * 2) + (ChessBoard.PADDING * 2);
         // "55" 是留给按钮的高度
         int height = width + 55;
         setSize(width, height);
@@ -79,21 +72,21 @@ public class GameWindow extends JFrame {
      * 设置监听事件
      */
     protected void addListeners() {
-        this.checkerBoardPanel.addMouseListener(new ChessBoardMouseListener(this));
-        this.startBtn.addActionListener(new StartActionListener(this));
-        this.withdrawBtn.addActionListener(new WithdrawActionListener(this));
+        this.chessBoard.addMouseListener(new BoardListener(this));
+        this.startBtn.addActionListener(new ButtonListener(this));
+        this.cancelBtn.addActionListener(new ButtonListener(this));
     }
 
-    public CheckerBoardPanel getCheckerBoardPanel() {
-        return checkerBoardPanel;
+    public ChessBoard getBoardPanel() {
+        return chessBoard;
     }
 
     public JButton getStartBtn() {
         return this.startBtn;
     }
 
-    public JButton getWithdrawBtn() {
-        return this.withdrawBtn;
+    public JButton getCancelBtn() {
+        return this.cancelBtn;
     }
 
     public boolean isRunning() {
@@ -103,4 +96,5 @@ public class GameWindow extends JFrame {
     public void setRunning(boolean running) {
         isRunning = running;
     }
+
 }
