@@ -44,33 +44,40 @@ public class ButtonListener implements ActionListener {
 
     protected void start() {
         if (chooseChessManColor() != -1) {
-            init();
-            // 如果玩家选的不是黑色，则让AI先走
+            /* 清空棋盘 */
+            Board.get().clear();
+            window.getBoardPanel().repaint();
+
+            /* 修改开始按钮为重开按钮 */
+            window.getStartBtn().setText("重开");
+
+            /* 如果玩家选的不是黑色，则让AI先走 */
             if (Human.get().getColor() != Rule.FIRST) {
+                /* 先通知AI下棋 */
+                Human.get().noticeRobot();
+                /* AI下棋 */
                 Robot.get().play();
             }
+
+            /* 通知玩家开始下棋 */
+            Robot.get().noticeHuman();
         }
     }
 
     protected void restart() {
-
+        start();
     }
 
     protected void cancel() {
 
     }
 
-    protected void init() {
-        Board.get().clear();
-        window.getStartBtn().setText("重开");
-        window.getBoardPanel().repaint();
-        window.setRunning(true);
-    }
 
+    /** 开始按钮弹出框 */
     protected int chooseChessManColor() {
         String message = "请选择你要执的棋子，默认黑子先手。";
         String[] choices = {"黑棋(先)", "白棋"};
-        int response = JOptionPane.showOptionDialog(this.window, message, "",
+        int response = JOptionPane.showOptionDialog(this.window, message, "提示",
                 JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, null);
         /*
          * response == -1，即取消开始游戏;

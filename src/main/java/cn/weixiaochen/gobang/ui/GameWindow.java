@@ -8,6 +8,7 @@ import java.awt.*;
 
 /**
  * 游戏窗口
+ *
  * @author 魏小宸 2021/9/19
  */
 public class GameWindow extends JFrame {
@@ -20,9 +21,6 @@ public class GameWindow extends JFrame {
 
     /* 悔棋按钮 */
     private final JButton cancelBtn = new JButton("悔棋");
-
-    /* 游戏进行中标志 */
-    private boolean isRunning;
 
     public GameWindow() throws HeadlessException {
         setTitle("五子棋");
@@ -52,9 +50,6 @@ public class GameWindow extends JFrame {
         south.add(startBtn);
         south.add(cancelBtn);
         add(south, BorderLayout.SOUTH);
-
-        /* 初始设置悔棋按钮不可用 */
-        this.cancelBtn.setEnabled(false);
     }
 
     /**
@@ -88,13 +83,4 @@ public class GameWindow extends JFrame {
     public JButton getCancelBtn() {
         return this.cancelBtn;
     }
-
-    public boolean isRunning() {
-        return isRunning;
-    }
-
-    public void setRunning(boolean running) {
-        isRunning = running;
-    }
-
 }

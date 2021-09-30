@@ -3,6 +3,7 @@ package cn.weixiaochen.gobang.player;
 import cn.weixiaochen.gobang.chess.Board;
 import cn.weixiaochen.gobang.chess.Piece;
 import cn.weixiaochen.gobang.ui.ChessBoard;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ public class Human {
     private Piece.Color color;
 
     private List<Piece> pieces;
+
+    private boolean isThinking = false;
 
     public static Human get() {
         if (instance == null) {
@@ -31,10 +34,18 @@ public class Human {
      * @param y 鼠标点击的y坐标
      */
     public boolean play(int x, int y) {
+        isThinking = true;
         x = (int) Math.round((x - ChessBoard.MARGIN - ChessBoard.PADDING) * 1.0 / ChessBoard.GRID_SIZE);
         y = (int) Math.round((y - ChessBoard.MARGIN - ChessBoard.PADDING) * 1.0 / ChessBoard.GRID_SIZE);
         Piece piece = new Piece(x, y, color);
         return Board.get().add(piece);
+    }
+
+    /** 通知AI下棋 */
+    public void noticeRobot() {
+        setThinking(false);
+        Robot.get().setThinking(true);
+
     }
 
     public List<Piece> getHumanPieces() {
@@ -54,5 +65,13 @@ public class Human {
 
     public void setColor(Piece.Color color) {
         this.color = color;
+    }
+
+    public boolean isThinking() {
+        return isThinking;
+    }
+
+    public void setThinking(boolean isThinking) {
+        this.isThinking = isThinking;
     }
 }

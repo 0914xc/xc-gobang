@@ -28,6 +28,8 @@ public class Robot {
     /* 临时存储AI下一步要走的棋 */
     private Piece nextPiece;
 
+    private boolean isThinking = false;
+
     public static Robot get() {
         if (instance == null) {
             instance = new Robot();
@@ -40,8 +42,22 @@ public class Robot {
     }
 
     public boolean play() {
+        isThinking = false;
+        /* 搜索AI可以落子的点 */
         negamax(DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+        /* AI没有找到可以落子的点，则直接返回落子失败 */
+        if(nextPiece == null) {
+            return false;
+        }
+
         return Board.get().add(nextPiece);
+    }
+
+    /* 通知Human下棋 */
+    public void noticeHuman() {
+        setThinking(false);
+        Human.get().setThinking(true);
     }
 
     /**
@@ -161,5 +177,13 @@ public class Robot {
 
     public void setColor(Piece.Color color) {
         this.color = color;
+    }
+
+    public boolean isThinking() {
+        return isThinking;
+    }
+
+    public void setThinking(boolean isThinking) {
+        this.isThinking = isThinking;
     }
 }
