@@ -108,7 +108,7 @@ public class Robot {
         }
 
         // 算玩家的得分
-        for (Piece piece : Human.get().getHumanPieces()) {
+        for (Piece piece : Human.get().getPieces()) {
             score -= Rule.getScore(piece);
         }
 

@@ -111,4 +111,7 @@ public class Board {
         return blackPieces;
     }
 
+    public List<Piece> getDonePieces() {
+        return donePieces;
+    }
 }

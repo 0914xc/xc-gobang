@@ -13,7 +13,6 @@ public class Rule {
         Piece piece = Board.get().getLastPiece();
         return piece != null && (getPiecesStatusInHorizontal(piece).num() >= 5 || getPiecesStatusInVertical(piece).num() >= 5
                 || getPiecesStatusInLeftSlash(piece).num() >= 5 || getPiecesStatusInRightSlash(piece).num() >= 5);
-
     }
 
     /**

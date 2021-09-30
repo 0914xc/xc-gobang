@@ -9,6 +9,7 @@ import cn.weixiaochen.gobang.ui.GameWindow;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  * 开始、悔棋按钮监听事件
@@ -44,7 +45,6 @@ public class ButtonListener implements ActionListener {
     protected void start() {
         /* 清空棋盘 */
         Board.get().clear();
-        window.getBoardPanel().repaint();
 
         int choose = chooseChessManColor();
 
@@ -54,12 +54,15 @@ public class ButtonListener implements ActionListener {
         }
 
         /* 如果选择白棋，电脑先手 */
-        if (Human.get().getColor() == Piece.Color.BLACK) {
+        if (Human.get().getColor() == Piece.Color.WHITE) {
             /* 先通知AI下棋 */
             Human.get().noticeRobot();
             /* AI下棋 */
             Robot.get().play();
         }
+
+        /* 更新界面 */
+        window.getBoardPanel().repaint();
 
         /* 通知玩家开始下棋 */
         Robot.get().noticeHuman();
@@ -70,7 +73,31 @@ public class ButtonListener implements ActionListener {
     }
 
     protected void cancel() {
+        List<Piece> humanPieces = Human.get().getPieces();
+        List<Piece> robotPieces = Robot.get().getPieces();
 
+        /* 如果玩家没有落子，则不允许悔棋 */
+        if (humanPieces.size() == 0) {
+            return;
+        }
+
+        /* 如果AI正在思考，不允许悔棋 */
+        if (Robot.get().isThinking()) {
+            return;
+        }
+
+        /* 移除AI最后下的棋 */
+        Piece robotPiece = robotPieces.get(robotPieces.size() - 1);
+        robotPieces.remove(robotPiece);
+        Board.get().getDonePieces().remove(robotPiece);
+
+        /* 移除玩家最后下的棋 */
+        Piece humanPiece = humanPieces.get(humanPieces.size()-1);
+        humanPieces.remove(humanPiece);
+        Board.get().getDonePieces().remove(humanPiece);
+
+        /* 更新界面 */
+        window.getBoardPanel().repaint();
     }
 
 

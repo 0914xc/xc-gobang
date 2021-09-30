@@ -50,7 +50,7 @@ public class Human {
 
     }
 
-    public List<Piece> getHumanPieces() {
+    public List<Piece> getPieces() {
         if (pieces == null) {
             if (getColor() == Piece.Color.BLACK) {
                 pieces = Board.get().getBlackPieces();
