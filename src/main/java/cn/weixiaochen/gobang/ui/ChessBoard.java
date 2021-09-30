@@ -52,6 +52,7 @@ public class ChessBoard extends JPanel {
 
     @Override
     public void paint(Graphics g) {
+        super.paintComponent(g);
         // 得到一支画笔
         Graphics2D pen = (Graphics2D) g;
 

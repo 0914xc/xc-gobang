@@ -79,8 +79,4 @@ public class GameWindow extends JFrame {
     public JButton getStartBtn() {
         return this.startBtn;
     }
-
-    public JButton getCancelBtn() {
-        return this.cancelBtn;
-    }
 }
