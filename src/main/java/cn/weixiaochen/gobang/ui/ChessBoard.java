@@ -32,22 +32,20 @@ public class ChessBoard extends JPanel {
     public static final int PIECE_SIZE = 20;
 
     /* 网格线左上角顶点x坐标 */
-    int x1;
+    int x1 = MARGIN + PADDING;
 
     /* 网格线左上角顶点y坐标 */
-    int y1;
+    int y1 = MARGIN + PADDING;
 
     /* 网格线左上角顶点x坐标 */
-    int x2;
+    int x2 = x1 + BOARD_SIZE;
 
     /* 网格线左上角顶点y坐标 */
-    int y2;
+    int y2 = y1 + BOARD_SIZE;
 
     public ChessBoard() {
-        this.x1 = MARGIN + PADDING;
-        this.y1 = this.x1;
-        this.x2 = this.y1 + BOARD_SIZE;
-        this.y2 = this.x2;
+        int size = BOARD_SIZE + (MARGIN * 2) + (PADDING * 2);
+        setPreferredSize(new Dimension(size, size));
     }
 
     @Override

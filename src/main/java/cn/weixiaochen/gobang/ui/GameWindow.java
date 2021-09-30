@@ -27,8 +27,8 @@ public class GameWindow extends JFrame {
         setLayout(new BorderLayout());
         // 添加组件
         addComponents();
-        // 设置游戏窗口大小
-        setWindowSize();
+        // 设置游戏窗口大小自适应
+        pack();
         // 游戏窗口大小不可编辑
         setResizable(false);
         // 设置游戏窗口居中显示
@@ -44,23 +44,11 @@ public class GameWindow extends JFrame {
     protected void addComponents() {
         /* 添加棋盘 */
         add(chessBoard, BorderLayout.CENTER);
-
         /* 添加开始、悔棋按钮 */
         JPanel south = new JPanel();
         south.add(startBtn);
         south.add(cancelBtn);
         add(south, BorderLayout.SOUTH);
-    }
-
-    /**
-     * 设置游戏窗口大小
-     */
-    protected void setWindowSize() {
-        // 根据棋盘大小计算出游戏窗口大小
-        int width = ChessBoard.BOARD_SIZE + (ChessBoard.MARGIN * 2) + (ChessBoard.PADDING * 2);
-        // "55" 是留给按钮的高度
-        int height = width + 55;
-        setSize(width, height);
     }
 
     /**
