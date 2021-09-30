@@ -53,5 +53,15 @@ public class Piece {
             return color.equals(WHITE) ? BLACK : WHITE;
         }
 
+        public static String getName(Color color) {
+            if (color == BLACK) {
+                return "黑子";
+            }
+            if (color == WHITE) {
+                return "白子";
+            }
+            return "";
+        }
+
     }
 }

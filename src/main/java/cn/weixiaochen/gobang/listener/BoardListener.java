@@ -48,23 +48,8 @@ public class BoardListener implements MouseListener {
             new AiThread().start();
         } else {
             /* 游戏结束，宣布玩家获得胜利 */
-            announceTheWinner();
+            Human.get().win(window);
         }
-    }
-
-    protected void announceTheWinner() {
-        Piece.Color winnerColor = Board.get().getColorOfLastPiece();
-        String color = winnerColor == Piece.Color.WHITE ? "白" : "黑";
-
-        Piece.Color humanColor = Human.get().getColor();
-
-        String message;
-        if (winnerColor == humanColor) {
-            message = "游戏结束，玩家执" + color + "获胜！";
-        } else {
-            message = "游戏结束，AI执" + color + "获胜！";
-        }
-        JOptionPane.showMessageDialog(window, message, "", JOptionPane.PLAIN_MESSAGE);
     }
 
     @Override
@@ -107,7 +92,7 @@ public class BoardListener implements MouseListener {
 
             /* 落子失败，宣布玩家获得胜利 */
             if (!ret) {
-                announceTheWinner();
+                Human.get().win(window);
             }
 
             /* 落子成功，更新游戏界面 */
@@ -115,7 +100,7 @@ public class BoardListener implements MouseListener {
 
             /* 判断AI是否获得胜利，没有结束则通知玩家开始下棋 */
             if (Rule.win()) {
-                announceTheWinner();
+                Robot.get().win(window);
             } else {
                 Robot.get().noticeHuman();
             }

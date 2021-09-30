@@ -1,6 +1,5 @@
 package cn.weixiaochen.gobang.listener;
 
-import cn.weixiaochen.gobang.chess.Rule;
 import cn.weixiaochen.gobang.chess.Board;
 import cn.weixiaochen.gobang.chess.Piece;
 import cn.weixiaochen.gobang.player.Human;
@@ -43,25 +42,27 @@ public class ButtonListener implements ActionListener {
     }
 
     protected void start() {
-        if (chooseChessManColor() != -1) {
-            /* 清空棋盘 */
-            Board.get().clear();
-            window.getBoardPanel().repaint();
+        /* 清空棋盘 */
+        Board.get().clear();
+        window.getBoardPanel().repaint();
 
-            /* 修改开始按钮为重开按钮 */
+        int choose = chooseChessManColor();
+
+        /* 如果没有选择取消，就修改开始按钮为重开按钮 */
+        if (choose != -1) {
             window.getStartBtn().setText("重开");
-
-            /* 如果玩家选的不是黑色，则让AI先走 */
-            if (Human.get().getColor() != Rule.FIRST) {
-                /* 先通知AI下棋 */
-                Human.get().noticeRobot();
-                /* AI下棋 */
-                Robot.get().play();
-            }
-
-            /* 通知玩家开始下棋 */
-            Robot.get().noticeHuman();
         }
+
+        /* 如果选择白棋，电脑先手 */
+        if (Human.get().getColor() == Piece.Color.BLACK) {
+            /* 先通知AI下棋 */
+            Human.get().noticeRobot();
+            /* AI下棋 */
+            Robot.get().play();
+        }
+
+        /* 通知玩家开始下棋 */
+        Robot.get().noticeHuman();
     }
 
     protected void restart() {
@@ -73,25 +74,26 @@ public class ButtonListener implements ActionListener {
     }
 
 
-    /** 开始按钮弹出框 */
+    /**
+     * 开始按钮弹出框
+     */
     protected int chooseChessManColor() {
         String message = "请选择你要执的棋子，默认黑子先手。";
         String[] choices = {"黑棋(先)", "白棋"};
-        int response = JOptionPane.showOptionDialog(this.window, message, "提示",
+        int choose = JOptionPane.showOptionDialog(this.window, message, "提示",
                 JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, null);
         /*
-         * response == -1，即取消开始游戏;
-         * response == 0, 即选择黑棋;
-         * response == 1, 即选择白棋;
+         * choose ==-1, 即取消游戏;
+         * choose == 0, 即选择黑棋;
+         * choose == 1, 即选择白棋;
          */
-        if (response == 0) {
+        if (choose == 0) {
             Human.get().setColor(Piece.Color.BLACK);
             Robot.get().setColor(Piece.Color.WHITE);
-        } else if (response == 1) {
+        } else if (choose == 1) {
             Human.get().setColor(Piece.Color.WHITE);
             Robot.get().setColor(Piece.Color.BLACK);
         }
-        return response;
+        return choose;
     }
-
 }

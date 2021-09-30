@@ -5,6 +5,8 @@ import cn.weixiaochen.gobang.chess.Piece;
 import cn.weixiaochen.gobang.ui.ChessBoard;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -57,6 +59,12 @@ public class Human {
             }
         }
         return pieces;
+    }
+
+    /** 宣布玩家获得胜利 */
+    public void win(Component component) {
+        String message = "游戏结束，玩家执" + Piece.Color.getName(getColor())+"获胜！";
+        JOptionPane.showMessageDialog(component, message, "提示", JOptionPane.PLAIN_MESSAGE);
     }
 
     public Piece.Color getColor() {

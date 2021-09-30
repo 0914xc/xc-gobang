@@ -4,6 +4,7 @@ import cn.weixiaochen.gobang.chess.Rule;
 import cn.weixiaochen.gobang.chess.Board;
 import cn.weixiaochen.gobang.chess.Piece;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -169,6 +170,12 @@ public class Robot {
             }
         }
         return pieces;
+    }
+
+    /** 通知AI获得胜利 */
+    public void win(Component component) {
+        String message = "游戏结束，AI执" + Piece.Color.getName(getColor())+"获胜！";
+        JOptionPane.showMessageDialog(component, message, "提示", JOptionPane.PLAIN_MESSAGE);
     }
 
     public Piece.Color getColor() {

@@ -124,7 +124,6 @@ public class ChessBoard extends JPanel {
      * 特殊标记最后一手棋子(空心十字)
      */
     protected void specialMarkLastPiece(Graphics2D pen) {
-
         // 没有棋子
         if (Board.get().isEmpty()) {
             return;

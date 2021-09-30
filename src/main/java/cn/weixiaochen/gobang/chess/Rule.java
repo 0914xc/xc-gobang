@@ -9,9 +9,6 @@ package cn.weixiaochen.gobang.chess;
  */
 public class Rule {
 
-    /* 定义黑棋先手 */
-    public static final Piece.Color FIRST = Piece.Color.BLACK;
-
     public static boolean win() {
         Piece piece = Board.get().getLastPiece();
         return piece != null && (getPiecesStatusInHorizontal(piece).num() >= 5 || getPiecesStatusInVertical(piece).num() >= 5
