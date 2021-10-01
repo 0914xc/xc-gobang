@@ -1,13 +1,10 @@
 package cn.weixiaochen.gobang.listener;
 
 import cn.weixiaochen.gobang.chess.Rule;
-import cn.weixiaochen.gobang.chess.Board;
-import cn.weixiaochen.gobang.chess.Piece;
 import cn.weixiaochen.gobang.player.Human;
 import cn.weixiaochen.gobang.player.Robot;
 import cn.weixiaochen.gobang.ui.GameWindow;
 
-import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 

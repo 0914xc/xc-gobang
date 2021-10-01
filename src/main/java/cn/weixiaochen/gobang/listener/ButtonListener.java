@@ -69,6 +69,10 @@ public class ButtonListener implements ActionListener {
     }
 
     protected void restart() {
+        /* 如果机器人在思考，禁止重开 */
+        if (Robot.get().isThinking()) {
+            return;
+        }
         start();
     }
 

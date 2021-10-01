@@ -46,12 +46,10 @@ public class Robot {
         isThinking = false;
         /* 搜索AI可以落子的点 */
         negamax(DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE);
-
         /* AI没有找到可以落子的点，则直接返回落子失败 */
-        if(nextPiece == null) {
+        if (nextPiece == null) {
             return false;
         }
-
         return Board.get().add(nextPiece);
     }
 
@@ -79,7 +77,7 @@ public class Robot {
             move(candidate);
             // 站在对手的角度，对AI走完这一步以后，局面的一个评分
             // alpha和beta的一个转换，自己的下界alpha会变成对手的上界beta
-            int value = -negamax(depth-1, -beta, -alpha);
+            int value = -negamax(depth - 1, -beta, -alpha);
             unMove(candidate);
             if (value > best) {
                 best = value;
@@ -104,12 +102,12 @@ public class Robot {
 
         // 算AI的得分
         for (Piece piece : getPieces()) {
-            score += Rule.getScore(piece);
+            score += Rule.calculateScoreOfPieces(piece);
         }
 
         // 算玩家的得分
         for (Piece piece : Human.get().getPieces()) {
-            score -= Rule.getScore(piece);
+            score -= Rule.calculateScoreOfPieces(piece);
         }
 
         return score;
@@ -132,8 +130,8 @@ public class Robot {
             Piece.Color color = Piece.Color.reverse(board.getColorOfLastPiece());
             for (int i = 0; i < Board.SIZE; i++) {
                 for (int j = 0; j < Board.SIZE; j++) {
-                    // 考虑两格远以内的棋
-                    if (board.isEmpty(i, j) && hasNeighbors(i, j, 2)) {
+                    // 考虑一格远以内的棋
+                    if (board.isEmpty(i, j) && hasNeighbors(i, j, 1)) {
                         candidates.add(new Piece(i, j, color));
                     }
                 }
@@ -143,8 +141,8 @@ public class Robot {
     }
 
     protected boolean hasNeighbors(int x, int y, int distance) {
-        for (int i = x; i < x + distance; i++) {
-            for (int j = y; j < y + distance; j++) {
+        for (int i = x - distance; i <= x + distance; i++) {
+            for (int j = y - distance; j <= y + distance; j++) {
                 if (!board.isEmpty(i, j)) {
                     return true;
                 }
@@ -172,9 +170,11 @@ public class Robot {
         return pieces;
     }
 
-    /** 通知AI获得胜利 */
+    /**
+     * 通知AI获得胜利
+     */
     public void win(Component component) {
-        String message = "游戏结束，AI执" + Piece.Color.getName(getColor())+"获胜！";
+        String message = "游戏结束，AI执" + Piece.Color.getName(getColor()) + "获胜！";
         JOptionPane.showMessageDialog(component, message, "提示", JOptionPane.PLAIN_MESSAGE);
     }
 

@@ -85,17 +85,17 @@ public class Board {
      * 判断棋盘某个位置是否为空
      */
     public boolean isEmpty(int x, int y) {
-        for (Piece chess : whitePieces) {
-            if (x == chess.getX() && y == chess.getY()) {
-                return false;
-            }
-        }
-        for (Piece chess : blackPieces) {
+        for (Piece chess : donePieces) {
             if (x == chess.getX() && y == chess.getY()) {
                 return false;
             }
         }
         return true;
+    }
+
+    /** 判断是否超出棋盘边界 */
+    public boolean isValid(int x, int y) {
+        return x >= 0 && y >= 0 && x < SIZE && y < SIZE;
     }
 
     /* 判断棋盘上是否有某个棋子 */
