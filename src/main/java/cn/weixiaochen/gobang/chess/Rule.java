@@ -33,7 +33,7 @@ public class Rule {
         for (int i = 4; i >= 1; i--) {
             int x = piece.getX() - dx * i;
             int y = piece.getY() - dy * i;
-            if (board.isValid(x, y) || !board.isEmpty(x, y)) {
+            if (board.isValid(x, y) && !board.isEmpty(x, y)) {
                 ti = i;
                 break;
             }
@@ -70,7 +70,7 @@ public class Rule {
         for (int i = 4; i >= 1; i--) {
             int x = piece.getX() + dx * i;
             int y = piece.getY() + dy * i;
-            if (board.isValid(x, y) || !board.isEmpty(x, y)) {
+            if (board.isValid(x, y) && !board.isEmpty(x, y)) {
                 ti = i;
                 break;
             }
@@ -141,8 +141,10 @@ public class Rule {
 
         PiecesType verticalType = getPiecesType(getPiecesStatusInVertical(piece));
         types.put(verticalType, types.getOrDefault(verticalType, 1));
+
         PiecesType leftSlashType = getPiecesType(getPiecesStatusInLeftSlash(piece));
         types.put(leftSlashType, types.getOrDefault(leftSlashType, 1));
+
         PiecesType rightSlashType = getPiecesType(getPiecesStatusInRightSlash(piece));
         types.put(rightSlashType, types.getOrDefault(rightSlashType, 1));
 

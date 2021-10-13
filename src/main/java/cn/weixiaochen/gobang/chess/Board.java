@@ -17,13 +17,13 @@ public class Board {
     private static Board board;
 
     /* 白棋 */
-    private final List<Piece> whitePieces = new LinkedList<Piece>();
+    private final List<Piece> whitePieces = new LinkedList<>();
 
     /* 黑棋 */
-    private final List<Piece> blackPieces = new LinkedList<Piece>();
+    private final List<Piece> blackPieces = new LinkedList<>();
 
     /* 记录下过的棋的顺序 */
-    private final List<Piece> donePieces = new LinkedList<Piece>();
+    private final List<Piece> donePieces = new LinkedList<>();
 
     public static Board get() {
         if (board == null) {

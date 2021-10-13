@@ -3,7 +3,6 @@ package cn.weixiaochen.gobang.player;
 import cn.weixiaochen.gobang.chess.Board;
 import cn.weixiaochen.gobang.chess.Piece;
 import cn.weixiaochen.gobang.ui.ChessBoard;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,8 +17,6 @@ public class Human {
 
     private Piece.Color color;
 
-    private List<Piece> pieces;
-
     private boolean isThinking = false;
 
     public static Human get() {
@@ -29,7 +26,8 @@ public class Human {
         return instance;
     }
 
-    private Human() { }
+    private Human() {
+    }
 
     /**
      * @param x 鼠标点击的x坐标
@@ -43,7 +41,9 @@ public class Human {
         return Board.get().add(piece);
     }
 
-    /** 通知AI下棋 */
+    /**
+     * 通知AI下棋
+     */
     public void noticeRobot() {
         setThinking(false);
         Robot.get().setThinking(true);
@@ -51,19 +51,18 @@ public class Human {
     }
 
     public List<Piece> getPieces() {
-        if (pieces == null) {
-            if (getColor() == Piece.Color.BLACK) {
-                pieces = Board.get().getBlackPieces();
-            } else {
-                pieces = Board.get().getWhitePieces();
-            }
+        if (getColor() == Piece.Color.BLACK) {
+            return Board.get().getBlackPieces();
+        } else {
+            return Board.get().getWhitePieces();
         }
-        return pieces;
     }
 
-    /** 宣布玩家获得胜利 */
+    /**
+     * 宣布玩家获得胜利
+     */
     public void win(Component component) {
-        String message = "游戏结束，玩家执" + Piece.Color.getName(getColor())+"获胜！";
+        String message = "游戏结束，玩家执" + Piece.Color.getName(getColor()) + "获胜！";
         JOptionPane.showMessageDialog(component, message, "提示", JOptionPane.PLAIN_MESSAGE);
     }
 

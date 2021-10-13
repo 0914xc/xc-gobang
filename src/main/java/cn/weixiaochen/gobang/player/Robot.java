@@ -15,7 +15,7 @@ import java.util.List;
 public class Robot {
 
     /* 思考层数:必须为偶数才有意义（偶数代表AI思考了玩家的防守） */
-    public static final int DEPTH = 4;
+    public static final int DEPTH = 2;
 
     private static Robot instance;
 
@@ -23,8 +23,6 @@ public class Robot {
     private Piece.Color color;
 
     private final Board board;
-
-    private List<Piece> pieces;
 
     /* 临时存储AI下一步要走的棋 */
     private Piece nextPiece;
@@ -45,7 +43,7 @@ public class Robot {
     public boolean play() {
         isThinking = false;
         /* 搜索AI可以落子的点 */
-        negamax(DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        maxmin(DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         /* AI没有找到可以落子的点，则直接返回落子失败 */
         if (nextPiece == null) {
             return false;
@@ -60,44 +58,55 @@ public class Robot {
     }
 
     /**
-     * 极大极小极搜索算法(负极大值搜索算法)
+     * 极大极小极搜索算法
      * Alpha-Beta剪枝算法（alpha下界，beta上界）
      */
-    protected int negamax(int depth, int alpha, int beta) {
+    protected int maxmin(int depth, int alpha, int beta, boolean isRobot) {
         // 走到叶子节点，或者游戏结束，直接返回当前局面得分(站在AI角度的一个值)
         if (depth == 0 || Rule.win()) {
             return evaluate();
         }
 
-        // 我在这一层中得到的最优的分数
-        int best = Integer.MIN_VALUE;
-
-        // 不是叶子节点，进行递归遍历搜索
-        for (Piece candidate : getCandidates()) {
-            move(candidate);
-            // 站在对手的角度，对AI走完这一步以后，局面的一个评分
-            // alpha和beta的一个转换，自己的下界alpha会变成对手的上界beta
-            int value = -negamax(depth - 1, -beta, -alpha);
-            unMove(candidate);
-            if (value > best) {
-                best = value;
-                if (depth == DEPTH && color.equals(candidate.getColor())) {
-                    this.nextPiece = candidate;
+        if (isRobot) {
+            for (Piece candidate : getCandidates()) {
+                move(candidate);
+                int value = maxmin(depth - 1, alpha, beta, false);
+                unMove(candidate);
+                if (value > alpha) {
+                    /* 更新下界 */
+                    alpha = value;
+                    if (depth == DEPTH) {
+                        this.nextPiece = candidate;
+                    }
+                    /* beta剪枝 */
+                    if (alpha >= beta) {
+                        return beta;
+                    }
                 }
             }
-            // 站在我的角度，取value中最大的一个值，使得我的利益最大化（提高我的下限）
-            alpha = Math.max(alpha, value);
-            if (value >= beta) {
-                break;
+            return alpha;
+        } else {
+            for (Piece candidate : getCandidates()) {
+                move(candidate);
+                int value = maxmin(depth - 1, alpha, beta, true);
+                unMove(candidate);
+                if (value < beta) {
+                    /* 更新上界 */
+                    beta = value;
+                    /* alpha剪枝 */
+                    if (alpha >= beta) {
+                        return alpha;
+                    }
+                }
             }
+            return beta;
         }
-        return best;
     }
 
     /**
      * 评估函数(AI得分 - 玩家得分)
      */
-    protected int evaluate() {
+    public int evaluate() {
         int score = 0;
 
         // 算AI的得分
@@ -160,14 +169,11 @@ public class Robot {
     }
 
     public List<Piece> getPieces() {
-        if (pieces == null) {
-            if (getColor() == Piece.Color.BLACK) {
-                pieces = board.getBlackPieces();
-            } else {
-                pieces = board.getWhitePieces();
-            }
+        if (getColor() == Piece.Color.BLACK) {
+            return board.getBlackPieces();
+        } else {
+            return board.getWhitePieces();
         }
-        return pieces;
     }
 
     /**

@@ -35,11 +35,14 @@ public class Piece {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Piece) {
-            Piece another = (Piece) obj;
-            return x == another.getX() && y == another.getY() && color == another.getColor();
+        if (obj == this) {
+            return true;
         }
-        return false;
+        if (!(obj instanceof Piece)) {
+            return false;
+        }
+        Piece another = (Piece) obj;
+        return x == another.getX() && y == another.getY() && color == another.getColor();
     }
 
     public enum Color {
