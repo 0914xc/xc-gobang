@@ -7,6 +7,8 @@ import cn.weixiaochen.gobang.chess.Piece;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -15,7 +17,7 @@ import java.util.List;
 public class Robot {
 
     /* 思考层数:必须为偶数才有意义（偶数代表AI思考了玩家的防守） */
-    public static final int DEPTH = 2;
+    public static final int DEPTH = 4;
 
     private static Robot instance;
 
@@ -41,7 +43,7 @@ public class Robot {
     }
 
     public boolean play() {
-        isThinking = false;
+        isThinking = true;
         /* 搜索AI可以落子的点 */
         maxmin(DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         /* AI没有找到可以落子的点，则直接返回落子失败 */
@@ -129,23 +131,25 @@ public class Robot {
      */
     protected List<Piece> getCandidates() {
         List<Piece> candidates = new ArrayList<>();
-        // 棋盘为空(说明电脑执黑先行), 默认下天元
+        /* 生成候选落子的点, 若棋盘为空(说明电脑执黑先行), 默认下天元 */
         if (board.isEmpty()) {
             candidates.add(new Piece(7, 7, color));
-        }
-        // 棋盘不为空
-        else {
-            // 取最后一手棋子的相反颜色
+        } else {
+            /* 取最后一手棋子的相反颜色 */
             Piece.Color color = Piece.Color.reverse(board.getColorOfLastPiece());
             for (int i = 0; i < Board.SIZE; i++) {
                 for (int j = 0; j < Board.SIZE; j++) {
-                    // 考虑一格远以内的棋
+                    /* 考虑一格远以内的棋 */
                     if (board.isEmpty(i, j) && hasNeighbors(i, j, 1)) {
                         candidates.add(new Piece(i, j, color));
                     }
                 }
             }
         }
+
+        /* 启发式搜索：根据每个候选棋子的得分，对候选棋子进行排序 */
+        sortPieces(candidates);
+
         return candidates;
     }
 
@@ -158,6 +162,17 @@ public class Robot {
             }
         }
         return false;
+    }
+
+    protected void sortPieces(List<Piece> pieces) {
+        /* 计算每个棋子得分 */
+        HashMap<Piece, Integer> score = new HashMap<>();
+        for (Piece piece : pieces) {
+            score.put(piece, Rule.calculateScoreOfPieces(piece));
+        }
+
+        /* 对棋子进行排序 */
+        pieces.sort(Comparator.comparingInt(score::get));
     }
 
     protected void move(Piece piece) {
@@ -180,6 +195,7 @@ public class Robot {
      * 通知AI获得胜利
      */
     public void win(Component component) {
+        setThinking(false);
         String message = "游戏结束，AI执" + Piece.Color.getName(getColor()) + "获胜！";
         JOptionPane.showMessageDialog(component, message, "提示", JOptionPane.PLAIN_MESSAGE);
     }
